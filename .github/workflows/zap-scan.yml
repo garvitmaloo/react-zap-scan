@@ -3,6 +3,7 @@ name: ZAP Full Scan
 on:
   push:
     branches:
+      - develop
       - feat/integrate-zap
 
 jobs:
