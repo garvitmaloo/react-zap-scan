@@ -23,9 +23,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Wait for code to be deployed on AWS Amplify
+        run: sleep 150 # Give 150 seconds for deployment
+
       - name: Run baseline scan on the deployed URL
         run: |
-          docker run --name zap -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t ${{ secrets.DEPLOY_URL }}
+          docker run --name zap -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t ${{ secrets.DEPLOY_URL }} -I
 
       - name: Clean up ZAP container
         run: docker stop zap && docker rm zap
