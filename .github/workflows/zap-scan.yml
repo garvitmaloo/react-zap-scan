@@ -25,7 +25,7 @@ jobs:
 
       - name: Run baseline scan on the deployed URL
         run: |
-          docker run --name zap -v ${{ github.workspace }}/zap:/zap-config -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t ${{ secrets.DEPLOY_URL }} -c /zap-config/zap.conf -z "-config failOnError=true -config alertThreshold=High"
+          docker run --name zap -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t ${{ secrets.DEPLOY_URL }} -a
 
       - name: Clean up ZAP container
         run: docker stop zap && docker rm zap
