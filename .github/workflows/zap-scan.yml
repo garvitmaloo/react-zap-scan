@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - feat/zap-scan-report
 
 jobs:
   zap-scan:
@@ -22,12 +23,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Wait for code to be deployed on AWS Amplify
-        run: sleep 150 # Give 150 seconds for deployment
+      # - name: Wait for code to be deployed on AWS Amplify
+      #   run: sleep 150 # Give 150 seconds for deployment
 
       - name: Run baseline scan on the deployed URL
         run: |
-          docker run --name zap -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t ${{ secrets.DEPLOY_URL }} -I
+          docker run --name zap -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t ${{ secrets.DEPLOY_URL }} -I -r testReport.html
+
+      - name: Copy contents of testReport.html from container to scanReport.html in the repo
+        run: docker cp zap:/testReport.html /zap/scanReport.html
 
       - name: Clean up ZAP container
         run: docker stop zap && docker rm zap
